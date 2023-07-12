@@ -62,7 +62,7 @@ public class ThriftExtractor {
 
     File thriftTemp = new File(bin, "thrift.exe");
 
-    try (InputStream in = ThriftCompiler.class.getClassLoader().getResourceAsStream(sourceFilePath)) {
+    try (InputStream in = getClass().getClassLoader().getResourceAsStream(sourceFilePath)) {
       if (in == null) {
         throw new CannotLocateAppropriateExecutableException();
       }
