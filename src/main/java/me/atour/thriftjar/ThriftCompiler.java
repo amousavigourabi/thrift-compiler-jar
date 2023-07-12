@@ -19,6 +19,13 @@ import org.apache.commons.lang3.SystemUtils;
 public class ThriftCompiler {
 
   /**
+   * Hides the default no-arg constructor.
+   */
+  private ThriftCompiler() {
+    throw new IllegalStateException();
+  }
+
+  /**
    * Supported operating systems enum.
    */
   enum OperatingSystems {
