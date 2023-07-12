@@ -13,14 +13,17 @@
     <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+    <assertj.version>3.24.2</assertj.version>
     <checkstyle.version>3.3.0</checkstyle.version>
     <commons-io.version>2.13.0</commons-io.version>
     <commons-lang3.version>3.12.0</commons-lang3.version>
+    <failsafe.version>3.1.2</failsafe.version>
     <junit.version>5.10.0-RC1</junit.version>
     <lombok.version>1.18.28</lombok.version>
     <pmd.version>3.21.0</pmd.version>
     <slf4j.version>2.0.7</slf4j.version>
     <spotless.version>2.37.0</spotless.version>
+    <surefire.version>3.1.2</surefire.version>
   </properties>
 
   <dependencies>
@@ -51,6 +54,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -164,6 +174,26 @@
           </execution>
         </executions>
       </plugin>
+      <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-failsafe-plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${failsafe.version}</version>
+        <configuration>
+          <includes>
+            <include>**/*IntegrationTest.java</include>
+          </includes>
+          <rerunFailingTestsCount>3</rerunFailingTestsCount>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-pmd-plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -185,6 +215,21 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire.version}</version>
+        <configuration>
+          <excludes>
+            <exclude>**/*IntegrationTest.java</exclude>
+          </excludes>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+          <rerunFailingTestsCount>3</rerunFailingTestsCount>
+        </configuration>
       </plugin>
     </plugins>
   </build>
