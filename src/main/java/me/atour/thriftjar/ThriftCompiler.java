@@ -94,8 +94,11 @@ public class ThriftCompiler {
       } else {
         readChar = (char) read;
       }
-      line += readChar;
       if (readChar == '\n') {
+        if (line.equals("\r") || line.equals("")) {
+          line = "";
+          continue;
+        }
         switch (logLevel) {
           case WARN:
             log.warn(line);
@@ -115,6 +118,8 @@ public class ThriftCompiler {
             break;
         }
         line = "";
+      } else {
+        line += readChar;
       }
     }
   }
