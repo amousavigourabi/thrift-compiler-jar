@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import lombok.NonNull;
@@ -19,11 +20,16 @@ public class ThriftCompiler {
   /**
    * Runs the Thrift compiler.
    *
-   * @param args CLI arguments for the Thrift compiler
+   * @param args Thrift compiler version flag followed by the CLI arguments for the Thrift compiler
    */
   public ThriftCompiler(String[] args) {
     try {
-      runThrift(args);
+      String version = "0.18.1";
+      if (args.length >= 1 && args[0].startsWith("--thriftversion") && args[0].length() > 15) {
+        version = args[0].substring(15);
+        args = Arrays.copyOfRange(args, 1, args.length);
+      }
+      runThrift(version, args);
     } catch (IOException e) {
       log.error("Failed to run Thrift because of IOException {}.", e.getMessage());
     } catch (InterruptedException e) {
@@ -34,12 +40,13 @@ public class ThriftCompiler {
   /**
    * Runs the Thrift compiler with the provided arguments.
    *
+   * @param version the Thrift compiler version to use
    * @param args the Thrift arguments
    * @throws IOException when the Thrift executable cannot be extracted or run
    * @throws InterruptedException when the Thrift compiler {@link Process} gets interrupted
    */
-  private void runThrift(String[] args) throws IOException, InterruptedException {
-    File exe = new ThriftExtractor().getThriftExecutable();
+  private void runThrift(String version, String[] args) throws IOException, InterruptedException {
+    File exe = new ThriftExtractor(version).getThriftExecutable();
     executeThrift(exe, args);
   }
 
