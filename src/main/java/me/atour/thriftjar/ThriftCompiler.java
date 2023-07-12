@@ -2,11 +2,13 @@ package me.atour.thriftjar;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.event.Level;
 
 /**
  * The Thrift compiler.
@@ -36,7 +38,7 @@ public class ThriftCompiler {
    * @throws IOException when the Thrift executable cannot be extracted or run
    * @throws InterruptedException when the Thrift compiler {@link Process} gets interrupted
    */
-  private static void runThrift(String[] args) throws IOException, InterruptedException {
+  private void runThrift(String[] args) throws IOException, InterruptedException {
     File exe = new ThriftExtractor().getThriftExecutable();
     executeThrift(exe, args);
   }
@@ -49,7 +51,7 @@ public class ThriftCompiler {
    * @throws IOException when the {@link Process} cannot be started
    * @throws InterruptedException when the {@link Process} gets interrupted
    */
-  private static void executeThrift(@NonNull File executable, @NonNull String @NonNull [] args)
+  private void executeThrift(@NonNull File executable, @NonNull String @NonNull [] args)
       throws IOException, InterruptedException {
     String absolutePathToExecutable = executable.getAbsolutePath();
     List<String> command = new ArrayList<>(args.length + 1);
@@ -57,9 +59,63 @@ public class ThriftCompiler {
     Collections.addAll(command, args);
     ProcessBuilder pb = new ProcessBuilder(command);
     Process thriftCompiler = pb.start();
+    Thread errorLogger = new Thread(() -> logStream(thriftCompiler.getErrorStream(), Level.ERROR));
+    Thread infoLogger = new Thread(() -> logStream(thriftCompiler.getInputStream(), Level.INFO));
+    errorLogger.start();
+    infoLogger.start();
     int thriftExitCode = thriftCompiler.waitFor();
+    errorLogger.join();
+    infoLogger.join();
     if (thriftExitCode != 0) {
       throw new AbnormalThriftCompilerTerminationException(thriftExitCode);
+    }
+  }
+
+  /**
+   * Logs the contents of the {@link InputStream} to SLF4J.
+   * Useful when trying to log from other {@link Process}es, like with the Thrift compiler.
+   *
+   * @param inputStream the {@link InputStream} to log
+   * @param logLevel the log level to log at
+   */
+  private void logStream(@NonNull InputStream inputStream, @NonNull Level logLevel) {
+    String line = "";
+    int read = 0;
+    while (read > -1) {
+      try {
+        read = inputStream.read();
+      } catch (IOException e) {
+        log.debug("Caught IOException while reading from stream in `logStream(InputStream, Level)`.", e);
+        continue;
+      }
+      char readChar;
+      if (read == -1) {
+        readChar = '\n';
+      } else {
+        readChar = (char) read;
+      }
+      line += readChar;
+      if (readChar == '\n') {
+        switch (logLevel) {
+          case WARN:
+            log.warn(line);
+            break;
+          case INFO:
+            log.info(line);
+            break;
+          case ERROR:
+            log.error(line);
+            break;
+          case DEBUG:
+            log.debug(line);
+            break;
+          case TRACE:
+          default:
+            log.trace(line);
+            break;
+        }
+        line = "";
+      }
     }
   }
 }
