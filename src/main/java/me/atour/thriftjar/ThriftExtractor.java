@@ -32,18 +32,20 @@ public class ThriftExtractor {
   /**
    * Extracts the Thrift executable.
    *
+   * @param thriftVersion the Thrift compiler version to extract
    * @throws IOException when the Thrift executable cannot be extracted
    */
-  public ThriftExtractor() throws IOException {
-    extractThriftCompiler();
+  public ThriftExtractor(String thriftVersion) throws IOException {
+    extractThriftCompiler(thriftVersion);
   }
 
   /**
    * Extracts the specified Thrift compiler executable from the JAR until JVM termination.
    *
+   * @param thriftVersion the Thrift compiler version to extract
    * @throws IOException when the Thrift executable cannot be extracted
    */
-  @NonNull private void extractThriftCompiler() throws IOException {
+  @NonNull private void extractThriftCompiler(String thriftVersion) throws IOException {
     File target = File.createTempFile("thrift", "");
     if (!target.delete() || !target.mkdirs()) {
       throw new CannotExtractExecutableException();
@@ -56,13 +58,14 @@ public class ThriftExtractor {
     }
     bin.deleteOnExit();
 
-    String thriftVersion = "0.18.1";
-
     String sourceFilePath = "bin" + '/' + thriftVersion + '/' + executableName();
 
     File thriftTemp = new File(bin, "thrift.exe");
 
-    try (InputStream in = ThriftCompiler.class.getClassLoader().getResourceAsStream(sourceFilePath)) {
+    try (InputStream in = getClass().getClassLoader().getResourceAsStream(sourceFilePath)) {
+      if (in == null) {
+        throw new CannotLocateAppropriateExecutableException();
+      }
       Files.copy(Objects.requireNonNull(in), thriftTemp.toPath());
     }
 
