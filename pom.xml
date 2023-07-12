@@ -24,6 +24,8 @@
     <slf4j.version>2.0.7</slf4j.version>
     <spotless.version>2.37.0</spotless.version>
     <surefire.version>3.1.2</surefire.version>
+
+    <rerunFailingTestsCount>3</rerunFailingTestsCount>
   </properties>
 
   <dependencies>
@@ -167,7 +169,6 @@
         </configuration>
         <executions>
           <execution>
-            <id>checkstyle-verify</id>
             <goals>
               <goal>check</goal>
             </goals>
@@ -183,7 +184,6 @@
           <includes>
             <include>**/*IntegrationTest.java</include>
           </includes>
-          <rerunFailingTestsCount>3</rerunFailingTestsCount>
         </configuration>
         <executions>
           <execution>
@@ -208,7 +208,6 @@
         </configuration>
         <executions>
           <execution>
-            <id>pmd-check</id>
             <goals>
               <goal>check</goal>
               <goal>cpd-check</goal>
@@ -228,7 +227,6 @@
           <includes>
             <include>**/*Test.java</include>
           </includes>
-          <rerunFailingTestsCount>3</rerunFailingTestsCount>
         </configuration>
       </plugin>
     </plugins>
