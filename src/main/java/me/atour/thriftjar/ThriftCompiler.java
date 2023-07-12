@@ -25,13 +25,10 @@ public class ThriftCompiler {
   public ThriftCompiler(String[] args) {
     try {
       String[] processedArgs = args;
-      String version = "";
-      if (args.length >= 1 && args[0].startsWith("--thriftversion")) {
-        version = args[0].substring(15);
+      String version = "0.18.1";
+      if (args.length >= 1 && args[0].startsWith("--thriftversion=") && args[0].length() > 16) {
+        version = args[0].substring(16);
         processedArgs = Arrays.copyOfRange(args, 1, args.length);
-      }
-      if (version.isBlank()) {
-        version = "0.18.1";
       }
       runThrift(version, processedArgs);
     } catch (IOException e) {
