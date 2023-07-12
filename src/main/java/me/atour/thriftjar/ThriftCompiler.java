@@ -30,6 +30,7 @@ public class ThriftCompiler {
         version = args[0].substring(16);
         processedArgs = Arrays.copyOfRange(args, 1, args.length);
       }
+      log.info("Running Thrift {}.", version);
       runThrift(version, processedArgs);
     } catch (IOException e) {
       log.error("Failed to run Thrift because of IOException {}.", e.getMessage());
