@@ -24,12 +24,16 @@ public class ThriftCompiler {
    */
   public ThriftCompiler(String[] args) {
     try {
-      String version = "0.18.1";
-      if (args.length >= 1 && args[0].startsWith("--thriftversion") && args[0].length() > 15) {
+      String[] processedArgs = args;
+      String version = "";
+      if (args.length >= 1 && args[0].startsWith("--thriftversion")) {
         version = args[0].substring(15);
-        args = Arrays.copyOfRange(args, 1, args.length);
+        processedArgs = Arrays.copyOfRange(args, 1, args.length);
       }
-      runThrift(version, args);
+      if (version.isBlank()) {
+        version = "0.18.1";
+      }
+      runThrift(version, processedArgs);
     } catch (IOException e) {
       log.error("Failed to run Thrift because of IOException {}.", e.getMessage());
     } catch (InterruptedException e) {
