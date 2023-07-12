@@ -43,8 +43,7 @@ public class ThriftExtractor {
    *
    * @throws IOException when the Thrift executable cannot be extracted
    */
-  @NonNull
-  private void extractThriftCompiler() throws IOException {
+  @NonNull private void extractThriftCompiler() throws IOException {
     File target = File.createTempFile("thrift", "");
     if (!target.delete() || !target.mkdirs()) {
       throw new CannotExtractExecutableException();
