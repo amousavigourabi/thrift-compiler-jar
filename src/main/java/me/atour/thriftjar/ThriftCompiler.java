@@ -52,7 +52,8 @@ public class ThriftCompiler {
    * Does not extract the executable.
    *
    * @param executable the {@link File} location of the executable to run
-   * @param args the CLI arguments to pass to the Thrift compiler
+   * @param args the CLI arguments to pass to the Thrift compiler,
+   *             without the {@code --thriftversion} flag.
    * @throws IOException when the {@link Process} cannot be started
    * @throws InterruptedException when the {@link Process} gets interrupted
    */
