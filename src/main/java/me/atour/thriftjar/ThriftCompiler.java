@@ -58,14 +58,7 @@ public class ThriftCompiler {
    */
   public static void run(@NonNull File executable, @NonNull String @NonNull [] args)
       throws IOException, InterruptedException {
-    String[] processedArgs = args;
-    String version = CURRENT_VERSION;
-    if (args.length >= 1 && args[0].startsWith("--thriftversion=") && args[0].length() > 16) {
-      version = args[0].substring(16);
-      processedArgs = Arrays.copyOfRange(args, 1, args.length);
-    }
-    log.info("Running Thrift {}.", version);
-    new ThriftCompiler().executeThrift(executable, processedArgs);
+    new ThriftCompiler().executeThrift(executable, args);
   }
 
   /**
