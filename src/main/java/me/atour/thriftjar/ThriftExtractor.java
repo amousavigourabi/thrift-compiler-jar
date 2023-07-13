@@ -24,7 +24,7 @@ public class ThriftExtractor {
    * Supported operating systems enum.
    */
   enum OperatingSystems {
-    LINUX_X86,
+    LINUX_X86_64,
     WINDOWS,
     UNKNOWN
   }
@@ -97,8 +97,8 @@ public class ThriftExtractor {
     switch (getOs()) {
       case WINDOWS:
         return "thrift-windows.exe";
-      case LINUX_X86:
-        return "thrift-linux_x86.exe";
+      case LINUX_X86_64:
+        return "thrift-linux_x86_64.exe";
       case UNKNOWN:
       default:
         throw new CannotLocateAppropriateExecutableException();
@@ -112,8 +112,8 @@ public class ThriftExtractor {
    */
   private ThriftExtractor.OperatingSystems getOs() {
     ThriftExtractor.OperatingSystems os;
-    if (SystemUtils.IS_OS_LINUX && isX86()) {
-      os = ThriftExtractor.OperatingSystems.LINUX_X86;
+    if (SystemUtils.IS_OS_LINUX && isX86_64()) {
+      os = ThriftExtractor.OperatingSystems.LINUX_X86_64;
     } else if (SystemUtils.IS_OS_WINDOWS) {
       os = ThriftExtractor.OperatingSystems.WINDOWS;
     } else {
@@ -123,11 +123,12 @@ public class ThriftExtractor {
   }
 
   /**
-   * Checks whether this machine is x86.
+   * Checks whether this machine is x86_64.
    *
-   * @return a {@code boolean} indicating whether this machine is x86
+   * @return a {@code boolean} indicating whether this machine is x86_64
    */
-  private boolean isX86() {
-    return System.getProperty("os.arch").contains("x86");
+  private boolean isX86_64() {
+    String arch = System.getProperty("os.arch").toLowerCase();
+    return arch.contains("x8664") || arch.contains("x64") || arch.contains("amd64");
   }
 }
