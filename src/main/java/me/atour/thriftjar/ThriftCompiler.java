@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.event.Level;
@@ -15,17 +17,23 @@ import org.slf4j.event.Level;
  * The Thrift compiler.
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ThriftCompiler {
+
+  /**
+   * Most recent stable Thrift version.
+   */
+  private static final String CURRENT_VERSION = "0.18.1";
 
   /**
    * Runs the Thrift compiler.
    *
    * @param args Thrift compiler version flag followed by the CLI arguments for the Thrift compiler
    */
-  public ThriftCompiler(String[] args) {
+  public ThriftCompiler(@NonNull String @NonNull [] args) {
     try {
       String[] processedArgs = args;
-      String version = "0.18.1";
+      String version = CURRENT_VERSION;
       if (args.length >= 1 && args[0].startsWith("--thriftversion=") && args[0].length() > 16) {
         version = args[0].substring(16);
         processedArgs = Arrays.copyOfRange(args, 1, args.length);
@@ -37,6 +45,21 @@ public class ThriftCompiler {
     } catch (InterruptedException e) {
       log.error("Failed to run Thrift because of InterruptedException {}.", e.getMessage());
     }
+  }
+
+  /**
+   * Run the Thrift compiler at the specified location with the provided arguments.
+   * Does not extract the executable.
+   *
+   * @param executable the {@link File} location of the executable to run
+   * @param args the CLI arguments to pass to the Thrift compiler,
+   *             without the {@code --thriftversion} flag.
+   * @throws IOException when the {@link Process} cannot be started
+   * @throws InterruptedException when the {@link Process} gets interrupted
+   */
+  public static void run(@NonNull File executable, @NonNull String @NonNull [] args)
+      throws IOException, InterruptedException {
+    new ThriftCompiler().executeThrift(executable, args);
   }
 
   /**

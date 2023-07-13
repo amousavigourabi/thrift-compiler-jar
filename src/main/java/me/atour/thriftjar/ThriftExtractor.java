@@ -40,6 +40,18 @@ public class ThriftExtractor {
   }
 
   /**
+   * Extracts the Thrift executable.
+   *
+   * @param thriftVersion the Thrift compiler version to extract
+   * @return a {@link File} representation of the executables location after extraction
+   * @throws IOException when the Thrift executable cannot be extracted
+   */
+  @NonNull public static File extract(String thriftVersion) throws IOException {
+    ThriftExtractor thriftExtractor = new ThriftExtractor(thriftVersion);
+    return thriftExtractor.getThriftExecutable();
+  }
+
+  /**
    * Extracts the specified Thrift compiler executable from the JAR until JVM termination.
    *
    * @param thriftVersion the Thrift compiler version to extract
