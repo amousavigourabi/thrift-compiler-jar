@@ -41,9 +41,9 @@ ThriftCompiler.run(binary, args);
 ```
 
 In the case you need to invoke the compiler multiple times, you can just run the
-`ThriftCompiler#run(File, String[])` call multiple times, to avoid extracting of the binary.
-If you ship your own Thrift executable with your application, you can also depend on that binary using
-this call in the following way.
+`ThriftCompiler#run(File, String[])` call multiple times, to avoid extracting the binary for all
+executions. If you want to use your own Thrift executable with the application, you can also use your
+own binaries using this call in the following way.
 
 ```java
 File customBinary = ...;
@@ -54,7 +54,7 @@ ThriftCompiler.run(customBinary, args);
 ## Installation
 
 To install the project, first clone it from GitHub. Then go to the directory it was cloned to and run the
-Maven install command as follows, to install the project to your local Maven repository.
+Maven install command to install the project to your local Maven repository.
 
 ```shell
 mvn clean install
