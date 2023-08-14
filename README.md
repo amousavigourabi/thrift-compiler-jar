@@ -2,10 +2,11 @@
 
 Multi-platform Thrift compiler.
 
-JAR that packages precompiled Thrift compiler binaries for Windows and Linux x86, providing portability
-across this limited set of platforms. Supports all Thrift versions >=0.6.0 for Windows and 0.18.1 for Linux
-x86. As Thrift only published binaries for Windows, there is no possibility to download the binaries and
-avoid using the embedded ones for now.
+Executable JAR that packages precompiled Thrift compiler binaries for Windows and Linux systems,
+providing portability across these platforms. Supports all Thrift versions starting at 0.6.0 for Windows
+and Linux systems running on 64-bit x86, aarch64, s390x, ppc64le, and armv7 machines. As Thrift only
+publishes binaries for Windows, it is impossible to avoid using the embedded binaries and instead
+download them on the fly.
 
 ## Usage
 
@@ -69,3 +70,13 @@ Then, you can use the project by including the following Maven dependency in you
   <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
+
+## Reproducibility
+
+This project contains precompiled binaries. These can pose large security risks. After all, why would
+they be trusted? To take away some of these concerns, the used binaries are built transparently using
+the actions in the [amousavigourabi/thrift-binary](https://github.com/amousavigourabi/thrift-binary)
+repository. These builds are designed to be fully reproducible by re-running the actions. This can be
+done by creating your own fork and triggering the run of the build workflow. By comparing the outputs
+of this new run and the binaries included in this project, it can be verified that no malicious code was
+injected in the pre-compiled binaries.
