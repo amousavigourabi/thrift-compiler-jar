@@ -24,6 +24,10 @@ public class ThriftExtractor {
    * Supported operating systems enum.
    */
   enum OperatingSystems {
+    LINUX_AARCH64,
+    LINUX_ARMV7,
+    LINUX_PPC64LE,
+    LINUX_S390X,
     LINUX_X86_64,
     WINDOWS,
     UNKNOWN
@@ -97,6 +101,14 @@ public class ThriftExtractor {
     switch (getOs()) {
       case WINDOWS:
         return "thrift-windows.exe";
+      case LINUX_AARCH64:
+        return "thrift-linux_aarch64.exe";
+      case LINUX_ARMV7:
+        return "thrift-linux_armv7.exe";
+      case LINUX_PPC64LE:
+        return "thrift-linux_ppc64le.exe";
+      case LINUX_S390X:
+        return "thrift-linux_s390x.exe";
       case LINUX_X86_64:
         return "thrift-linux_x86_64.exe";
       case UNKNOWN:
@@ -111,13 +123,25 @@ public class ThriftExtractor {
    * @return some {@link ThriftExtractor.OperatingSystems} value for this machine
    */
   private ThriftExtractor.OperatingSystems getOs() {
-    ThriftExtractor.OperatingSystems os;
-    if (SystemUtils.IS_OS_LINUX && isX86_64()) {
-      os = ThriftExtractor.OperatingSystems.LINUX_X86_64;
+    OperatingSystems os;
+    if (SystemUtils.IS_OS_LINUX) {
+      if (isX86_64()) {
+        os = OperatingSystems.LINUX_X86_64;
+      } else if (isS390x()) {
+        os = OperatingSystems.LINUX_S390X;
+      } else if (isArmV7()) {
+        os = OperatingSystems.LINUX_ARMV7;
+      } else if (isPpc64le()) {
+        os = OperatingSystems.LINUX_PPC64LE;
+      } else if (isAarch64()) {
+        os = OperatingSystems.LINUX_AARCH64;
+      } else {
+        os = OperatingSystems.UNKNOWN;
+      }
     } else if (SystemUtils.IS_OS_WINDOWS) {
-      os = ThriftExtractor.OperatingSystems.WINDOWS;
+      os = OperatingSystems.WINDOWS;
     } else {
-      os = ThriftExtractor.OperatingSystems.UNKNOWN;
+      os = OperatingSystems.UNKNOWN;
     }
     return os;
   }
@@ -130,5 +154,45 @@ public class ThriftExtractor {
   private boolean isX86_64() {
     String arch = System.getProperty("os.arch").toLowerCase();
     return arch.contains("x8664") || arch.contains("x64") || arch.contains("amd64");
+  }
+
+  /**
+   * Checks whether this machine is s390x.
+   *
+   * @return a {@code boolean} indicating whether this machine is s390x
+   */
+  private boolean isS390x() {
+    String arch = System.getProperty("os.arch").toLowerCase();
+    return arch.contains("s390x");
+  }
+
+  /**
+   * Checks whether this machine is armv7.
+   *
+   * @return a {@code boolean} indicating whether this machine is armv7
+   */
+  private boolean isArmV7() {
+    String arch = System.getProperty("os.arch").toLowerCase();
+    return arch.contains("arm") && arch.contains("v7");
+  }
+
+  /**
+   * Checks whether this machine is ppc64le.
+   *
+   * @return a {@code boolean} indicating whether this machine is ppc64le
+   */
+  private boolean isPpc64le() {
+    String arch = System.getProperty("os.arch").toLowerCase();
+    return arch.contains("ppc64le");
+  }
+
+  /**
+   * Checks whether this machine is aarch64.
+   *
+   * @return a {@code boolean} indicating whether this machine is aarch64
+   */
+  private boolean isAarch64() {
+    String arch = System.getProperty("os.arch").toLowerCase();
+    return arch.contains("aarch64");
   }
 }
