@@ -4,7 +4,7 @@ Multi-platform Thrift compiler.
 
 Executable JAR that packages precompiled Thrift compiler binaries for Windows and Linux systems,
 providing portability across these platforms. Supports all Thrift versions starting at 0.6.0 for Windows
-and Linux systems running on 64-bit x86, aarch64, s390x, ppc64le, and armv7 machines. As Thrift only
+and Linux systems running on aarch64, amd64, armv7, ppc64le, and s390x machines. As Thrift only
 publishes binaries for Windows, it is impossible to avoid using the embedded binaries and instead
 download them on the fly.
 

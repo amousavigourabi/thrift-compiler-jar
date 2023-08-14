@@ -28,7 +28,7 @@ public class ThriftExtractor {
     LINUX_ARMV7,
     LINUX_PPC64LE,
     LINUX_S390X,
-    LINUX_X86_64,
+    LINUX_AMD64,
     WINDOWS,
     UNKNOWN
   }
@@ -109,8 +109,8 @@ public class ThriftExtractor {
         return "thrift-linux_ppc64le.exe";
       case LINUX_S390X:
         return "thrift-linux_s390x.exe";
-      case LINUX_X86_64:
-        return "thrift-linux_x86_64.exe";
+      case LINUX_AMD64:
+        return "thrift-linux_amd64.exe";
       case UNKNOWN:
       default:
         throw new CannotLocateAppropriateExecutableException();
@@ -125,8 +125,8 @@ public class ThriftExtractor {
   private ThriftExtractor.OperatingSystems getOs() {
     OperatingSystems os;
     if (SystemUtils.IS_OS_LINUX) {
-      if (isX86_64()) {
-        os = OperatingSystems.LINUX_X86_64;
+      if (isAmd64()) {
+        os = OperatingSystems.LINUX_AMD64;
       } else if (isS390x()) {
         os = OperatingSystems.LINUX_S390X;
       } else if (isArmV7()) {
@@ -147,11 +147,11 @@ public class ThriftExtractor {
   }
 
   /**
-   * Checks whether this machine is x86_64.
+   * Checks whether this machine is amd64.
    *
-   * @return a {@code boolean} indicating whether this machine is x86_64
+   * @return a {@code boolean} indicating whether this machine is amd64
    */
-  private boolean isX86_64() {
+  private boolean isAmd64() {
     String arch = System.getProperty("os.arch").toLowerCase();
     return arch.contains("x8664") || arch.contains("x64") || arch.contains("amd64");
   }
